@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.0.js"></script>
+    <script type="text/javascript" src="https://rawgit.com/padolsey-archive/jquery.fn/master/cross-domain-ajax/jquery.xdomainajax.js" ></script>
+    <link rel="stylesheet" href="master.css">
+    <title>dokidokivisualビューワ</title>
+  </head>
+  <body>
+    <div class="main">
+      <h2>画像の保存、スクリーンショットはおやめください。</h2>
+      <canvas id="canvas" width="1350" height="2000"></canvas>
+      <h1>画像はすべてdokidokivisual.comからの引用です。</h1>
+    </div>
+    <div class="btns">
+      <a class="button btn-1" onclick="page++;getPage(page);">次へ</a>
+      <a class="button btn-2" onclick="page--;if (page < 1) {page = 1;}getPage(page);">前へ</a>
+    </div>
+<script>
+var page = 1;
+var id=location.search.substr(4);
+var mode = true;
+var canvas = document.getElementById('canvas')
+var context = canvas.getContext('2d');
+var srcs = [];
+var images = [];
+var plim = 0;
+
+function getIndex(page) {
+  var p = page || 1;
+
+
+
+  $.ajax({
+        type: 'GET',
+        url: 'http://www.dokidokivisual.com/comics/book/actibook/wb'+id+'/books/images/',
+        dataType: 'text',
+        success: function(data) {
+            if (data.responseText.match(/href="3\.33\//)) {
+              $.ajax({
+                    type: 'GET',
+                    url: 'http://www.dokidokivisual.com/comics/book/actibook/wb'+id+'/books/images/3.33',
+                    dataType: 'text',
+                    success: function(data) {
+                      plim  = Number(data.responseText.substring(data.responseText.lastIndexOf('g_')+2,data.responseText.indexOf('/',data.responseText.lastIndexOf('g_'))));
+                      getPage_B(p);
+                      mode = false;
+                    }, error:function(e) {
+                        console.log(e);
+                    }
+                });
+            }else {
+              $.ajax({
+                    type: 'GET',
+                    url: 'http://www.dokidokivisual.com/comics/book/actibook/wb'+id+'/books/images/2',
+                    dataType: 'text',
+                    success:function (data) {
+                      plim  = Number(data.responseText.substring(data.responseText.lastIndexOf('>',data.responseText.lastIndexOf('.jpg'))+1,data.responseText.lastIndexOf('.jpg')));
+                      getPage_A(p);
+                      mode = true;
+                    }, error:function(e) {
+                        console.log(e);
+                    }
+                });
+            }
+        }, error:function(e) {
+            console.log(e);
+          }
+        })
+      };
+function getPage_A(p) {
+  var images = [];
+  images[0] = new Image;
+  images[0].onload = function () {
+          context.drawImage(images[0], 0, 0,1350,2000);
+          $("html,body").animate({scrollTop:$('canvas').offset().top});
+  }
+  images[0].src = ['http://www.dokidokivisual.com/comics/book/actibook/wb'+id+'/books/images/2/'+p+'.jpg'];
+}
+function getPage_B(p) {
+  var n = 0;
+  for (var l = 1; l < 6; l++) {
+    for (var k = 1; k < 5; k++) {
+      srcs[n] = 'http://www.dokidokivisual.com/comics/book/actibook/wb'+id+'/books/images/3.33/g_'+p+'/x'+k+'y'+l+'.jpg'
+      n++;
+    }
+  }
+  var images = [];
+  for (var i in srcs) {
+      images[i] = new Image();
+      images[i].src = srcs[i];
+    }
+    var loadedCount = 1;
+    for (var i in images) {
+        images[i].onload = function() {
+            if (loadedCount == images.length) {
+                var x = 0;
+                var y = 0;
+                for (var j in images) {
+                    context.drawImage(images[j], x, y);
+                    x += images[j].width;
+                    a=Number(j)+1;
+                    if (a % 4 == 0){
+                      y += images[j].height;
+                      x = 0;
+                    }
+                }
+                $("html,body").animate({scrollTop:$('canvas').offset().top});
+            }
+            loadedCount++;
+        }
+      }
+}
+function getPage(p) {
+  if (p > plim) {
+    p=plim;
+    page = p;
+  }
+  if (mode == true) {
+    getPage_A(p);
+  }else {
+    getPage_B(p);
+  }
+}
+getIndex();
+</script>
+</body>
+</html>

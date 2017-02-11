@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.0.js"></script>
+    <script type="text/javascript" src="https://rawgit.com/padolsey-archive/jquery.fn/master/cross-domain-ajax/jquery.xdomainajax.js" ></script>
+    <link rel="stylesheet" href="master.css">
+    <title></title>
+  </head>
+  <body>
+    <h1>KRコミックス試し読みスマホ向けビューワ</h1>
+    <h2>使い方とか</h2>
+    <h3>下のボックスにURL(例：http://www.dokidokivisual.com/comics/book/past.php?cid=281)を入力して「読む！」ボタンを押してください。<br>
+      もしくはアニメ化作品のショートカットをボックスの下に用意したのでそこからも飛べます<br>
+    いろいろガバガバですがご愛嬌ということで許してほしいです(特に速度)</h3>
+    <form name="goview">
+      <input type="textarea" class="forms" name="txta" onchange="gotopage();s">
+      <input type="button" value="読む！" class="forms" onclick="gotopage();" name="btn">
+    </form>
+    <div onclick="obj=document.getElementById('open').style; obj.display=(obj.display=='none')?'block':'none';" class="button">
+      <a style="cursor:pointer;">▼ アニメ化作品</a>
+    </div>
+    <div id="open" style="display:none;clear:both;">
+      <a class="toggle" onclick="makelink(55,'hidamari',0)" id="hidamari_a">ひだまりスケッチ</a>
+      <ul class="inner child" id="hidamari"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(32,'dojin',0)" id="dojin_a">ドージンワーク</a>
+      <ul class="inner child" id="dojin"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(200,'k-on',0)" id="k-on_a">けいおん！</a>
+      <ul class="inner child" id="k-on"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(229,'kanamemo',0)" id="kanamemo_a">かなめも</a>
+      <ul class="inner child" id="kanamemo"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(657,'ga',0);makelink(867,'ga',5)" id="ga_a">GA 芸術科アートデザインクラス</a>
+      <ul class="inner child" id="ga"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(249,'merry',0)" id="merry_a">夢喰いメリー</a>
+      <ul class="inner child" id="merry"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(362,'Ach',0)" id="Ach_a">Aチャンネル</a>
+      <ul class="inner child" id="Ach"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(271,'KMB',0)" id="KMB_a">キルミーベイベー</a>
+      <ul class="inner child" id="KMB"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(166,'P2P',0)" id="P2P_a">あっちこっち</a>
+      <ul class="inner child" id="P2P"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(289,'yuyushiki',0)" id="yuyushiki_a">ゆゆ式</a>
+      <ul class="inner child" id="yuyushiki"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(489,'kinmosa',0)" id="kinmosa_a">きんいろモザイク</a>
+      <ul class="inner child" id="kinmosa"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(654,'sakuratrick',0)" id="sakuratrick_a">桜Trick</a>
+      <ul class="inner child" id="sakuratrick"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(564,'hanayamata',0)" id="hanayamata_a">ハナヤマタ</a>
+      <ul class="inner child" id="hanayamata"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(726,'kouhuku',0)" id="kouhuku_a">幸腹グラフィティ</a>
+      <ul class="inner child" id="kouhuku"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(706,'gakkougurashi',0)" id="gakkougurashi_a">がっこうぐらし！</a>
+      <ul class="inner child" id="gakkougurashi"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(751,'dandelion',0)" id="dandelion_a">城下町のダンデライオン</a>
+      <ul class="inner child" id="dandelion"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(84,'sansyasanyou',0)" id="sansyasanyou_a">三者三葉</a>
+      <ul class="inner child" id="sansyasanyou"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(788,'annehappy',0)" id="annehappy_a">あんハピ♪</a>
+      <ul class="inner child" id="annehappy"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(883,'newgame',0)" id="newgame_a">NEW GAME!</a>
+      <ul class="inner child" id="newgame"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(857,'MoS',0)" id="MoS_a">ステラのまほう</a>
+      <ul class="inner child" id="MoS"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(987,'urara',0)" id="urara_a">うらら迷路帖</a>
+      <ul class="inner child" id="urara"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(1268,'do_S',0)" id="do_S_a">ブレンド・S</a>
+      <ul class="inner child" id="do_S"></ul>
+      <br>
+      <a class="toggle" onclick="makelink(1105,'yurucamp',0)" id="yurucamp_a">ゆるキャン△</a>
+      <ul class="inner child" id="yurucamp"></ul>
+      <br>
+      <!-- <a class="toggle" onclick="makelink(,0)" id="_a"></a>
+      <ul class="inner child" id=""></ul>
+      <br> -->
+    </div>
+    バグ報告とかはこちら→<a href="https://twitter.com/JP3LHW">@JP3LHW</a><br>
+    芳文社様およびまんがタイムきらら編集部様へ<br>
+    削除してほしいなどのご要望があれば上記したTwitterにご連絡いただければ気づき次第削除いたしますのでよろしくお願いします。
+    <script type="text/javascript">
+    function gotopage() {
+      var form = document.forms.goview;
+      $.ajax({
+            type: 'GET',
+            url: form.txta.value,
+            dataType: 'text',
+            success: function(data) {
+              var isbn = [];
+              isbn = data.responseText.match(/ISBN:.*</g);
+  	          location.href = "viewer.html?id="+isbn[0].match(/\d/g).join("").substr(-5,5);
+            }, error:function(e) {
+                console.log(e);
+            }
+        });
+    }
+    function demo01() {
+    $(this).next().slideToggle(300);
+    }
+
+    $(".toggle").click(demo01);
+    function makelink(cid,linkID,ofs) {
+        $.ajax({
+          type: 'GET',
+          url: 'http://www.dokidokivisual.com/comics/book/past.php?cid='+cid,
+          dataType: 'text',
+          success: function(data) {
+            var isbn = [];
+            isbn = data.responseText.match(/ISBN:.*</g);
+            var ul = document.getElementById(linkID);
+            if (isbn.length > 9) {
+              var stuck = [];
+              for (var i = 0; i < isbn.length-9; i++) {
+                stuck[i] = isbn[i+1];
+              }
+              for (var i = 0; i < isbn.length - stuck.length - 1; i++) {
+                isbn[1+i] = isbn[i+1+stuck.length];
+              }
+              for (var i = 0; i < stuck.length; i++) {
+                isbn[isbn.length-stuck.length+i]=stuck[i];
+              }
+            }
+            for (var i in isbn) {
+              var a = document.createElement("a");
+	            a.href = "viewer.html?id="+isbn[i].match(/\d/g).join("").substr(-5,5);
+	            a.target = "blank";
+	            a.innerHTML = Number(i)+1+ofs+"巻";
+	            var li = document.createElement("li");
+	            li.appendChild(a);
+	            ul.appendChild(li);
+            }
+          }, error:function(e) {
+              console.log(e);
+          }
+      });
+      $("#"+linkID+"_a").removeAttr("onclick");
+    }
+    $(function() {
+  $(document).on("keypress", "input:not(.allow_submit)", function(event) {
+    return event.which !== 13;
+  });
+});
+    </script>
+  </body>
+</html>
